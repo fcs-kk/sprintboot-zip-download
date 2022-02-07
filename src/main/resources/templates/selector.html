@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head >
+</head>
+<script>
+    // JavaScript
+    function funcDownloads(selectItem, selectItems) {
+        var sel = document.getElementById("multiSelect"); 
+
+        // 入力チェック
+        var count = 0;
+        for (var i=1; i< sel.length; i++) {
+            if (sel[i].selected) {
+                count++;
+            }
+        }
+
+        if (count <= 0) {
+            // エラーダイアログ
+            var message = "ダウンロードファイルを選択してください";
+            alert(message);
+            return false;
+        }
+        else {
+            // ダウンロード開始
+            document.multiselect.submit();
+        }
+    }
+</script>
+<body>
+    <h1 th:text="${title}">Dummy Title</h1>
+    <form role="form" action="/downloads" th:action="@{/downloads}" th:object="${selectForm}" method="post">
+        <select id="singleSelect" name="selectedItem">
+            <option value="" th:text="${selectMessage}">---</option>
+            <option th:each="item : ${selectItems}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key} == *{selectedItem}">singleSelect</option>
+        </select>
+        <button type="submit" name="file" class="btn btn-default" th:text="${downloadButton}">confirm</button>
+    </form>
+    <form role="form" action="/downloads" th:action="@{/downloads}" th:object="${selectForm}" method="post" th:onsubmit="|return funcDownloads('__${selectMessage}__','__${downloadButton}__')|">
+        <select id="multiSelect" name="selectedItems" multiple="multiple" size="6">
+            <option value="" th:text="${selectMessage}">---</option>
+            <option th:each="item : ${selectItems}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key} == *{selectedItem}">multiSelect</option>
+        </select>
+        <input type="submit" value="一括ダウンロード" name="zip" />
+        <input type="submit" value="個別ダウンロード" name="file"  />
+    </form>
+</body>
+</html>
