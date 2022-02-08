@@ -17,10 +17,10 @@ public class CompressUtils {
    * 日本語ファイル名対応
    *
    * @param outStream OutputStream
-   * @param directory 圧縮するディレクトリ ( 例; C:/sample )
+   * @param rootDirectory 圧縮するディレクトリ ( 例; C:/sample )
    * @return 処理結果 true:圧縮成功 false:圧縮失敗
    */
-  public static boolean compressDirectory( OutputStream outStream, File directory ) 
+  public static boolean compressDirectory( OutputStream outStream, File rootDirectory ) 
   {
     boolean retVal = false; // 返り値
 
@@ -29,7 +29,7 @@ public class CompressUtils {
 
       // ZIPファイル出力オブジェクト作成
       outZip = new ZipOutputStream(outStream);
-      archive(outZip, directory);
+      archive(outZip, rootDirectory, rootDirectory);
       // 返り値に成功をセット
       retVal = true;
 
@@ -71,7 +71,7 @@ public class CompressUtils {
       // 圧縮ファイルリストのファイルを連続圧縮
       for (File file : files) {
         // ファイルオブジェクト作成
-        archive(outZip, file, file.getName(), "Shift_JIS");
+        archive(outZip, file, file.getName());
       }
       // 返り値に成功をセット
       retVal = true;
@@ -98,19 +98,31 @@ public class CompressUtils {
    * ディレクトリ圧縮のための再帰処理
    *
    * @param outZip ZipOutputStream
-   * @param targetFile File 圧縮したいファイル
+   * @param rootDir 圧縮ルートディレクトリ
+   * @param targetDir 圧縮対象ディレクトリ
    */
-  private static void archive(ZipOutputStream outZip, File targetFile) {
-    if ( targetFile.isDirectory() ) {
-      File[] files = targetFile.listFiles();
-      for (File target : files) {
-        if ( target.isDirectory() ) {
-          archive(outZip, target);
-        } else {
-          // 圧縮処理
-          archive(outZip, target, target.getName(), "Shift_JIS");
+  private static void archive(ZipOutputStream outZip, File rootDir, File targetDir) {
+    try {
+      if ( targetDir.isDirectory() ) {
+        File[] files = targetDir.listFiles();
+        for (File target : files) {
+          String entryName = getEntryName(rootDir.getAbsolutePath(), target.getAbsolutePath());
+          if ( target.isDirectory() ) {
+            // ディレクトリを登録
+            ZipEntry ze = new ZipEntry(entryName + "/");
+            outZip.putNextEntry(ze);
+            outZip.closeEntry();
+
+            // 再帰呼び出し
+            archive(outZip, rootDir, target);
+          } else {
+            // 圧縮処理
+            archive(outZip, target, entryName);
+          }
         }
       }
+    } catch (Exception ex) {
+
     }
   }
  
@@ -118,24 +130,21 @@ public class CompressUtils {
    * 圧縮処理
    *
    * @param outZip ZipOutputStream
-   * @param targetFile File 圧縮したいファイル
-   * @parma entryName 保存ファイル名
-   * @param enc 文字コード
+   * @param targetFile 圧縮対象ファイル
+   * @parma entryName 登録用ファイル名
    */
-  private static boolean archive(ZipOutputStream outZip, File targetFile, String entryName, String enc) {
+  private static boolean archive(ZipOutputStream outZip, File targetFile, String entryName) {
     // 圧縮レベル設定
     outZip.setLevel(5);
  
-    // // 文字コードを指定
-    // outZip.setEncoding(enc);
     try {
  
       // ZIPエントリ作成
       outZip.putNextEntry(new ZipEntry(entryName));
- 
+
       // 圧縮ファイル読み込みストリーム取得
       BufferedInputStream in = new BufferedInputStream(new FileInputStream(targetFile));
- 
+
       // 圧縮ファイルをZIPファイルに出力
       int readSize = 0;
       byte buffer[] = new byte[1024]; // 読み込みバッファ
@@ -144,6 +153,7 @@ public class CompressUtils {
       }
       // クローズ処理
       in.close();
+
       // ZIPエントリクローズ
       outZip.closeEntry();
     } catch ( Exception e ) {
@@ -151,5 +161,20 @@ public class CompressUtils {
       return false;
     }
     return true;
+  }
+  
+  /**
+   * ZipEntry登録用の名前を首都lkう
+   * ※圧縮ディレクトリ配下のパスを返す
+   *
+   * @param rootPath ルートディレクトリ
+   * @param filePath フォルダ名
+   * @return ファイル名
+   */
+  private static String getEntryName(String rootPath, String filePath)
+  {
+    String retVal = "";
+    retVal = filePath.substring(rootPath.length() + 1, filePath.length());
+    return retVal;
   }
 }
