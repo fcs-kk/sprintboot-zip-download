@@ -32,7 +32,7 @@ public class DownloadController {
      *  @param HttpServletResponse レスポンス
 	 *  @return string 画面
 	 */
-	@RequestMapping(value="/downloads", params="zip", method = RequestMethod.POST)
+	@RequestMapping(value="/downloadZip", method = RequestMethod.POST)
 	public Boolean doZipDownload(
                         @Validated @ModelAttribute SelectForm form, 
                         BindingResult result, 
@@ -84,7 +84,7 @@ public class DownloadController {
      *  @param HttpServletResponse レスポンス
 	 *  @return string 画面
 	 */
-	@RequestMapping(value="/downloads", params="file", method = RequestMethod.POST)
+	@RequestMapping(value="/downloadFile", method = RequestMethod.POST)
 	public Boolean doFileDownload(
                     @Validated @ModelAttribute SelectForm form, 
                         BindingResult result, 
@@ -121,4 +121,5 @@ public class DownloadController {
         // 結果を返す
         return retVal;
 	}	
+    
 }
