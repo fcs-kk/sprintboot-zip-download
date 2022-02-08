@@ -10,10 +10,11 @@
         // フォームを取得
         var targetForm = document.getElementById("multiForm"); 
         var targetElement = document.getElementById("multiSelect"); 
-        if (!targetElement) {
+        if (!targetForm || !targetElement) {
             return false;
         }
 
+        // 入力チェック
         for (var i=1; i< targetElement.length; i++) {
             if (targetElement[i].selected == true) {
                 selected = true;
@@ -21,19 +22,17 @@
             }
         }
 
-        // 入力チェック
+        // エラーダイアログ
         if (!selected) {
-            // エラーダイアログ
             var message = "ダウンロードファイルを選択してください";
             alert(message);
             return false;
         }
-        else {
-            // ダウンロード開始
-            targetForm.action=path;
-            targetForm.method="post";
-            targetForm.submit();
-        }
+
+        // ダウンロード開始
+        targetForm.action=path;
+        targetForm.method="post";
+        targetForm.submit();
     }
 </script>
 <body>
