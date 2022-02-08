@@ -53,4 +53,30 @@ public class DevUtils {
 		// ファイル一覧を返す
 		return retVal;
 	}
+
+		/**
+	 *  フォルダ一覧を取得する
+	 *  @version 1.0
+	 *  @param string 対象ディレクトリ
+	 *  @return List<string> フォルダリスト
+	 */
+	public static List<String> getDirectoryFolders(String targetPath)
+	{
+		List<String> retVal = new ArrayList<String>();	// 返り値
+
+		File dir = new File(targetPath);
+		File[] dirs = dir.listFiles();
+		for (File current : dirs) {
+			// フォルダ以外はスキップ
+			if (current.isDirectory() == false) {
+				continue;
+			}
+
+			// 返り値リストに登録
+			retVal.add(current.getName());
+		}
+
+		// ファイル一覧を返す
+		return retVal;
+	}
 }

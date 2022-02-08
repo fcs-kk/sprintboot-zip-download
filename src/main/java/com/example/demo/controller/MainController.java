@@ -22,28 +22,10 @@ import java.util.Map;
 public class MainController 
 {
 	@Bean // ファイルアップロード機能を有効化する
-    public MultipartResolver multipartResolver() {
-		MultipartResolver retVal = new StandardServletMultipartResolver();
-        return retVal;
-    }
-
-	/**
-	 *  過去データファイルのリストを取得
-	 *  @version 1.0
-	 *  @param なし
-	 *  @return Map<String,String> 過去データファイルリスト
-	 */
-	private Map<String,String> getSelectedItems() {
-		Map<String, String> retVal = new LinkedHashMap<String, String>();
-
-		List<String>files = DevUtils.getDirectoryFiles("d:\\", "csv");
-		for (String fileName : files) {
-			retVal.put(fileName, fileName);
-		}
-
-		// 過去データファイルのリストを返す
-		return retVal;
-	} 
+	public MultipartResolver multipartResolver() {
+	MultipartResolver retVal = new StandardServletMultipartResolver();
+			return retVal;
+	}
 
 	/**
 	 *  ダウンロード画面
@@ -55,13 +37,49 @@ public class MainController
 	@RequestMapping(value = "/selector", method = RequestMethod.GET)
 	public String index(SelectForm form, Model model) 
 	{
-		model.addAttribute("title",   "ファイルのダウンロード");
-		model.addAttribute("selectMessage",   "-- ファイルを選択してください--");
-		model.addAttribute("selectItems", getSelectedItems());
-		model.addAttribute("selectedItem",   "");
-		model.addAttribute("downloadButton", "Submitダウンロード");
+		// ファイルリストを表示モデルにセット
+		model.addAttribute("fileItems", getDataFiles());
 
-		//  selector 画面表示
+		// フォルダリストを表示モデルにセット
+		model.addAttribute("folderItems", getDataFolders());
+
+		// 選択画面を表示
 		return "selector";
 	}
+
+		/**
+	 *  過去データファイルのリストを取得
+	 *  @version 1.0
+	 *  @param なし
+	 *  @return Map<String,String> 過去データファイル名リスト
+	 */
+	private Map<String,String> getDataFiles() {
+		Map<String, String> retVal = new LinkedHashMap<String, String>();
+
+		List<String>files = DevUtils.getDirectoryFiles("d:\\", "csv");
+		for (String fileName : files) {
+			retVal.put(fileName, fileName);
+		}
+
+		// 過去データファイルのリストを返す
+		return retVal;
+	} 
+
+			/**
+	 *  過去データフォルダのリストを取得
+	 *  @version 1.0
+	 *  @param なし
+	 *  @return Map<String,String> 過去データフォルダ名リスト
+	 */
+	private Map<String,String> getDataFolders() {
+		Map<String, String> retVal = new LinkedHashMap<String, String>();
+
+		List<String>files = DevUtils.getDirectoryFolders("d:\\");
+		for (String fileName : files) {
+			retVal.put(fileName, fileName);
+		}
+
+		// 過去データフォルダのリストを返す
+		return retVal;
+	} 
 }

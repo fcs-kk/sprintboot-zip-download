@@ -4,12 +4,12 @@
 </head>
 <script>
     // JavaScript
-    function funcDownloads(path) {
+    function funcDownloads(path, formId, selectId) {
         var selected = false;
 
         // フォームを取得
-        var targetForm = document.getElementById("multiForm"); 
-        var targetElement = document.getElementById("multiSelect"); 
+        var targetForm = document.getElementById(formId); 
+        var targetElement = document.getElementById(selectId); 
         if (!targetForm || !targetElement) {
             return false;
         }
@@ -36,14 +36,22 @@
     }
 </script>
 <body>
-    <h1 th:text="${title}">Dummy Title</h1>
+    <h1>ファイルのダウンロード</h1>
     <form id="multiForm" role="form" th:object="${selectForm}" method="post">
         <select id="multiSelect" name="selectedItems" multiple="multiple" size="6">
-            <option value="" th:text="${selectMessage}">---</option>
-            <option th:each="item : ${selectItems}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key} == *{selectedItem}">multiSelect</option>
+            <option value="">-- ファイルを選択してください--</option>
+            <option th:each="item : ${fileItems}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key} == *{selectedItem}">multiSelect</option>
         </select>
-        <button type="button" th:onclick="|funcDownloads('/downloadZip')|">一括ダウンロード(button)</button>
-        <button type="button" th:onclick="|funcDownloads('/downloadFile')|">個別ダウンロード(button)</button>
+        <button type="button" th:onclick="|funcDownloads('/downloadZip','multiForm','multiSelect')|">一括ダウンロード(button)</button>
+        <button type="button" th:onclick="|funcDownloads('/downloadFile','multiForm','multiSelect')|">個別ダウンロード(button)</button>
+    </form>
+    <h1>フォルダのダウンロード</h1>
+    <form id="singleForm" role="form" th:object="${selectForm}" method="post">
+        <select id="singleSelect" name="selectedItem">
+            <option value="">-- フォルダを選択してください--</option>
+            <option th:each="item : ${folderItems}" th:value="${item.key}" th:text="${item.value}" th:selected="${item.key} == *{selectedItem}">singleSelect</option>
+        </select>
+        <button type="button" th:onclick="|funcDownloads('/downloadDir','singleForm','singleSelect')|">一括ダウンロード(button)</button>
     </form>
 </body>
 </html>
