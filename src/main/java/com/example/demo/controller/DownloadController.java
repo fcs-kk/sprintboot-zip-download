@@ -10,6 +10,7 @@ import com.example.demo.model.SelectForm;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -39,15 +40,21 @@ public class DownloadController {
                         HttpServletResponse response)  {
 
         Boolean retVal = false; // 返り値
-        
+        String folderName = form.getSelectedItem(); // フォルダ名
+
         // パラメータチェック
-        if (form.getSelectedItem() == null)
-        {
+        if (StringUtils.hasLength(folderName) == false) {
+            return false;
+        }
+        
+        // ディレクトリ名チェック（セキュリティチェック）
+        if (HttpUtils.checkDirectoryName(folderName) == false) {
+            // 不正なディレクトリ名は処理しない
             return false;
         }
 
         // リスト取得
-        String filePath = "D:\\"+form.getSelectedItem();
+        String filePath = "D:\\" + folderName;
         File file = new File(filePath);
         if (file.isDirectory() == false) {
             return false;
@@ -93,6 +100,11 @@ public class DownloadController {
 
         // リスト取得
         for (String filename : form.getSelectedItems()) {
+            // ディレクトリ名チェック（セキュリティチェック）
+            if (HttpUtils.checkDirectoryName(filename) == false) {
+                // 不正なファイル名はスキップ
+                continue;
+            }
             String filePath = "D:\\"+filename;
             File file = new File(filePath);
             if (file.isFile() == true) {
@@ -136,7 +148,7 @@ public class DownloadController {
 
         Boolean retVal = false; // 返り値
         String fileName = "";
-
+        
         // パラメータチェック
         if (form.getSelectedItems() != null)
         {
@@ -144,6 +156,12 @@ public class DownloadController {
         }
         else if (form.getSelectedItem() != null) {
             fileName = form.getSelectedItem();
+        }
+
+        // ディレクトリ名チェック（セキュリティチェック）
+        if (HttpUtils.checkDirectoryName(fileName) == false) {
+            // 不正なディレクトリ名は処理しない
+            return false;
         }
 
         // ファイルチェック

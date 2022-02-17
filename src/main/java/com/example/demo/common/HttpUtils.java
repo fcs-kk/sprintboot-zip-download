@@ -7,11 +7,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.thymeleaf.util.StringUtils;
 
 /**
  *  HTTPユーティリティクラス
@@ -144,5 +147,32 @@ public class HttpUtils {
 
         // 結果を返す
         return retVal;
-    }	
+    }
+
+    /**
+	 *  ディレクトリ名チェック
+	 *  @version 1.0
+	 *  @param String （ディレクトリを含まない）ファイル名またたフォルダ名
+	 *  @return boolean 結果（true:問題なし、false:問題有り）
+     *  @apiNote ディレクトリトラバーサル対策
+	 */
+    public static boolean checkDirectoryName(
+        String dirName
+    ) {
+        boolean retVal = false; // 返り値
+
+        // 文字列がある場合のみチェックする
+        if (StringUtils.isEmpty(dirName) == false) {
+            //正規表現でチェック
+            String regex = "(/|\\.\\./|\\.\\.\\\\)";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(dirName);
+
+            //結果
+            retVal = !matcher.find();
+        }
+
+        // 結果を返す
+        return retVal;
+    }
 }
