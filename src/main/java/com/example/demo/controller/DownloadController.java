@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,7 +29,7 @@ public class DownloadController {
 	 *  @param BindingResult バインド結果
 	 *  @param Model 画面データモデル
      *  @param HttpServletResponse レスポンス
-	 *  @return string 画面
+	 *  @return 結果（true:成功、false:失敗）
 	 */
 	@RequestMapping(value="/downloads", params="zip", method = RequestMethod.POST)
 	public Boolean doZipDownload(
@@ -40,31 +39,36 @@ public class DownloadController {
                         HttpServletResponse response)  {
 
         Boolean retVal = false; // 返り値
-        List<File> files = new ArrayList<>();
+        ArrayList<File> files = new ArrayList<>();
         
         // パラメータチェック
         if (form.getSelectedItems() == null)
         {
-            return retVal;
+            return false;
         }
-        else {
-            for (String filename : form.getSelectedItems()) {
-                String filePath = "D:\\"+filename;
-                File file = new File(filePath);
-                if (file.isFile() == true) {
-                    files.add(file);
-                }
+
+        // リスト取得
+        for (String filename : form.getSelectedItems()) {
+            // ディレクトリ名チェック（セキュリティチェック）
+            if (HttpUtils.checkDirectoryName(filename) == false) {
+                // 不正なファイル名はスキップ
+                continue;
+            }
+            String filePath = "D:\\"+filename;
+            File file = new File(filePath);
+            if (file.isFile() == true) {
+                files.add(file);
             }
         }
 
         // ファイル数チェック
         if (files.size() <= 0) {
-            return retVal;
+            return false;
         }
 
+        // ダウンロード処理
         try {
-            // ダウンロード処理
-            HttpUtils.doMultiplueFileDownload(response, files);
+            retVal = HttpUtils.doMultiplueFileDownload(response, files);
         }
         catch (Exception e) {
             // エラー処理
@@ -82,7 +86,7 @@ public class DownloadController {
 	 *  @param BindingResult バインド結果
 	 *  @param Model 画面データモデル
      *  @param HttpServletResponse レスポンス
-	 *  @return string 画面
+	 *  @return 結果（true:成功、false:失敗）
 	 */
 	@RequestMapping(value="/downloads", params="file", method = RequestMethod.POST)
 	public Boolean doFileDownload(
@@ -93,7 +97,7 @@ public class DownloadController {
 
         Boolean retVal = false; // 返り値
         String fileName = "";
-
+        
         // パラメータチェック
         if (form.getSelectedItems() != null)
         {
@@ -101,6 +105,12 @@ public class DownloadController {
         }
         else if (form.getSelectedItem() != null) {
             fileName = form.getSelectedItem();
+        }
+
+        // ディレクトリ名チェック（セキュリティチェック）
+        if (HttpUtils.checkDirectoryName(fileName) == false) {
+            // 不正なディレクトリ名は処理しない
+            return false;
         }
 
         // ファイルチェック
@@ -121,4 +131,5 @@ public class DownloadController {
         // 結果を返す
         return retVal;
 	}	
+    
 }
