@@ -20,18 +20,25 @@ public class CompressUtils {
    * @param rootDirectory 圧縮するディレクトリ ( 例; C:/sample )
    * @return 処理結果 true:圧縮成功 false:圧縮失敗
    */
-  public static boolean compressDirectory( OutputStream outStream, File rootDirectory ) 
+  public static boolean compressDirectory( 
+                  OutputStream outStream, 
+                  File rootDirectory ) 
   {
     boolean retVal = false; // 返り値
+
+    // パラメータチェック
+    if (outStream == null || rootDirectory == null) {
+      return false;
+    }
 
     ZipOutputStream outZip = null;
     try {
 
       // ZIPファイル出力オブジェクト作成
       outZip = new ZipOutputStream(outStream);
-      archive(outZip, rootDirectory, rootDirectory);
-      // 返り値に成功をセット
-      retVal = true;
+
+      // ZIP圧縮
+      retVal = archive(outZip, rootDirectory, rootDirectory);
 
     } catch ( Exception e ) {
 
@@ -59,8 +66,9 @@ public class CompressUtils {
    * @param fileList 圧縮するファイルリスト  ( 例; {C:/sample1.txt, C:/sample2.txt} )
    * @return 処理結果 true:圧縮成功 false:圧縮失敗
    */
-  public static boolean compressFileList( OutputStream outStream, ArrayList<File> files ) 
-  {
+  public static boolean compressFileList( 
+                  OutputStream outStream, 
+                  ArrayList<File> files ) {
     boolean retVal = false; // 返り値
 
     ZipOutputStream outZip = null;
@@ -71,10 +79,12 @@ public class CompressUtils {
       // 圧縮ファイルリストのファイルを連続圧縮
       for (File file : files) {
         // ファイルオブジェクト作成
-        archive(outZip, file, file.getName());
+        retVal = archive(outZip, file, file.getName());
+        // 失敗している場合、処理を抜ける
+        if (retVal == false) {
+          break;
+        }
       }
-      // 返り値に成功をセット
-      retVal = true;
 
     } catch ( Exception e ) {
 
@@ -100,8 +110,14 @@ public class CompressUtils {
    * @param outZip ZipOutputStream
    * @param rootDir 圧縮ルートディレクトリ
    * @param targetDir 圧縮対象ディレクトリ
+   * @return 結果（true:成功、false:失敗）
    */
-  private static void archive(ZipOutputStream outZip, File rootDir, File targetDir) {
+  private static boolean archive(
+                  ZipOutputStream outZip, 
+                  File rootDir, 
+                  File targetDir) {
+    boolean retVal = true;
+
     try {
       if ( targetDir.isDirectory() ) {
         File[] files = targetDir.listFiles();
@@ -114,16 +130,30 @@ public class CompressUtils {
             outZip.closeEntry();
 
             // 再帰呼び出し
-            archive(outZip, rootDir, target);
+            retVal = archive(outZip, rootDir, target);
           } else {
             // 圧縮処理
-            archive(outZip, target, entryName);
+            retVal = archive(outZip, target, entryName);
+          }
+
+          // 失敗している場合、処理を抜ける
+          if (retVal == false) {
+            break;
           }
         }
       }
+      else {
+        // ディレクトリではない場合、返り値に失敗をセット
+        retVal = false;
+      }
+      
     } catch (Exception ex) {
-
+      // 返り値に失敗をセット
+      retVal = false;
     }
+
+    // 結果を返す
+    return retVal;
   }
  
   /**
@@ -133,7 +163,10 @@ public class CompressUtils {
    * @param targetFile 圧縮対象ファイル
    * @parma entryName 登録用ファイル名
    */
-  private static boolean archive(ZipOutputStream outZip, File targetFile, String entryName) {
+  private static boolean archive(
+                  ZipOutputStream outZip, 
+                  File targetFile, 
+                  String entryName) {
     // 圧縮レベル設定
     outZip.setLevel(5);
  
@@ -157,9 +190,11 @@ public class CompressUtils {
       // ZIPエントリクローズ
       outZip.closeEntry();
     } catch ( Exception e ) {
-      // ZIP圧縮失敗
+      // 失敗を返す
       return false;
     }
+
+    // 成功を返す
     return true;
   }
   
@@ -171,9 +206,10 @@ public class CompressUtils {
    * @param filePath フォルダ名
    * @return ファイル名
    */
-  private static String getEntryName(String rootPath, String filePath)
-  {
-    String retVal = "";
+  private static String getEntryName(
+                  String rootPath, 
+                  String filePath) {
+    String retVal = ""; // 返り値
     retVal = filePath.substring(rootPath.length() + 1, filePath.length());
     return retVal;
   }

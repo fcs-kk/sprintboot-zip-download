@@ -22,7 +22,18 @@ public class DevUtils {
 	{
 		List<String> retVal = new ArrayList<String>();	// 返り値
 
+		// パラメータチェック
+		if (targetPath == null ||
+				extensionFilter == null) {
+				// パラメータが不正な場合、処理終了
+				return retVal;
+		}
 		File dir = new File(targetPath);
+		if (dir.isDirectory() == false) {
+				// パラメータが不正な場合、処理終了
+				return retVal;
+		}
+
 		File[] files = dir.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
@@ -64,7 +75,17 @@ public class DevUtils {
 	{
 		List<String> retVal = new ArrayList<String>();	// 返り値
 
+		// パラメータチェック
+		if (targetPath == null) {
+				// パラメータが不正な場合、処理終了
+				return retVal;
+		}
 		File dir = new File(targetPath);
+		if (dir.isDirectory() == false) {
+				// パラメータが不正な場合、処理終了
+				return retVal;
+		}
+
 		File[] dirs = dir.listFiles();
 		for (File current : dirs) {
 			// フォルダ以外はスキップ

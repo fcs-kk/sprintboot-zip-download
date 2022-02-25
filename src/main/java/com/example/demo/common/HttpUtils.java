@@ -36,8 +36,11 @@ public class HttpUtils {
         Boolean retVal = false; // 返り値
 
         // パラメータチェック
-        if (dir.isDirectory() == false) {
-            return retVal;
+        if (response == null || 
+            dir == null || 
+            dir.isDirectory() == false) {
+            // 返り値に失敗を返す
+            return false;
         }
 
         // ダウンロード対象のコンテンツタイプを指定
@@ -73,8 +76,11 @@ public class HttpUtils {
         Boolean retVal = false; // 返り値
 
         // パラメータチェック
-        if (files == null || files.size() <= 0) {
-            return retVal;
+        if (response == null || 
+            files == null || 
+            files.size() <= 0) {
+            // 返り値に失敗を返す
+            return false;
         }
 
         // ダウンロード対象のコンテンツタイプを指定
@@ -155,6 +161,7 @@ public class HttpUtils {
 	 *  @param String （ディレクトリを含まない）ファイル名またたフォルダ名
 	 *  @return boolean 結果（true:問題なし、false:問題有り）
      *  @apiNote ディレクトリトラバーサル対策
+     *  正規表現で、パスに含まれる「/」、「../」、「..\」をチェックします。
 	 */
     public static boolean checkDirectoryName(
         String dirName
