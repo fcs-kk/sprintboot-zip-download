@@ -17,7 +17,7 @@ public class HttpUtils_doComplessionFolderTest {
   MockHttpServletResponse response = new MockHttpServletResponse();
   
   @Test
-  public void testNormal() throws Exception {
+  void testNormal() throws Exception {
     boolean result = false;
     File path = new File(tempFolder.toFile().getAbsolutePath());
     result = HttpUtils.doComplessionFolderDownload(response, path);
@@ -28,7 +28,7 @@ public class HttpUtils_doComplessionFolderTest {
   }
 
   @Test
-  public void testDirectoryIsFile() throws Exception {
+  void testDirectoryIsFile() throws Exception {
     boolean result = false;
     File file = new File(tempFolder.toFile().getAbsolutePath() + "\\test.txt");
     file.createNewFile();
@@ -37,7 +37,7 @@ public class HttpUtils_doComplessionFolderTest {
   }
 
   @Test
-  public void testDirectoryNotExists() throws Exception {
+  void testDirectoryNotExists() throws Exception {
     boolean result = false;
     File path = new File(tempFolder.toFile().getAbsolutePath() + "\\non");
     result = HttpUtils.doComplessionFolderDownload(response, path);
@@ -45,14 +45,14 @@ public class HttpUtils_doComplessionFolderTest {
   }
 
   @Test
-  public void testDirectoryParameterIsNull() throws Exception {
+  void testDirectoryParameterIsNull() throws Exception {
     boolean result = false;
     result = HttpUtils.doComplessionFolderDownload(response, null);
     assertFalse(result);
   }
 
   @Test
-  public void testResponseParameterIsNull() throws Exception {
+  void testResponseParameterIsNull() throws Exception {
     boolean result = false;
     File path = new File(tempFolder.toFile().getAbsolutePath());
     result = HttpUtils.doComplessionFolderDownload(null, path);

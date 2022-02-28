@@ -18,7 +18,7 @@ public class HttpUtils_doMultiplueFileDownloadTest {
   MockHttpServletResponse response = new MockHttpServletResponse();
   
   @Test
-  public void testNormal() throws Exception {
+  void testNormal() throws Exception {
     boolean result = false;
     File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
@@ -35,7 +35,7 @@ public class HttpUtils_doMultiplueFileDownloadTest {
   }
 
   @Test
-  public void testResponseParameterIsNull() throws Exception {
+  void testResponseParameterIsNull() throws Exception {
     boolean result = false;
     File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
@@ -49,14 +49,14 @@ public class HttpUtils_doMultiplueFileDownloadTest {
   }
 
   @Test
-  public void testFilesParameterIsNull() throws Exception {
+  void testFilesParameterIsNull() throws Exception {
     boolean result = false;
     result = HttpUtils.doMultiplueFileDownload(response, null);
     assertFalse(result);
   }
 
   @Test
-  public void testFilesParameterIsZero() throws Exception {
+  void testFilesParameterIsZero() throws Exception {
     boolean result = false;
     ArrayList<File> files = new ArrayList<File>();
     result = HttpUtils.doMultiplueFileDownload(response, files);
@@ -64,7 +64,7 @@ public class HttpUtils_doMultiplueFileDownloadTest {
   }
 
   @Test
-  public void testFileNotExists() throws Exception {
+  void testFileNotExists() throws Exception {
     boolean result = false;
     File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();

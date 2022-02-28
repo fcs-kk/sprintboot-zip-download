@@ -17,7 +17,7 @@ public class CompressUtilsTest  {
   Path tempFolder;
 
   @Test
-  public void testCompressionRootDirectory() throws Exception {
+  void testCompressionRootDirectory() throws Exception {
     boolean result = false;
     createTestFileInRootDirectory("test.txt");
     OutputStream stream = mock(OutputStream.class);
@@ -26,7 +26,7 @@ public class CompressUtilsTest  {
   }
 
   @Test
-  public void testCompressionSubDirectory() throws Exception {
+  void testCompressionSubDirectory() throws Exception {
     boolean result = false;
     createTestFileInSubDirectory("test.txt");
     OutputStream stream = mock(OutputStream.class);
@@ -35,14 +35,14 @@ public class CompressUtilsTest  {
   }
   
   @Test
-  public void testStreamParameterIsNull() throws Exception {
+  void testStreamParameterIsNull() throws Exception {
     boolean result = false;
     result = CompressUtils.compressDirectory(null, tempFolder.toFile());
     assertFalse(result);
   }
 
   @Test
-  public void testDirectoryParameterIsNull() throws Exception {
+  void testDirectoryParameterIsNull() throws Exception {
     boolean result = false;
     OutputStream stream = mock(OutputStream.class);
     result = CompressUtils.compressDirectory(stream, null);
@@ -50,7 +50,7 @@ public class CompressUtilsTest  {
   }
 
   @Test
-  public void testDirectoryIsNothing() throws Exception {
+  void testDirectoryIsNothing() throws Exception {
     boolean result = false;
     File nonDir = new File(tempFolder.toFile().getAbsolutePath() + "\\non");
     OutputStream stream = mock(OutputStream.class);

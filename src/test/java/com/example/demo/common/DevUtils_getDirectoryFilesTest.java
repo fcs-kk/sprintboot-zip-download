@@ -16,7 +16,7 @@ public class DevUtils_getDirectoryFilesTest {
   Path tempFolder;
   
   @Test
-  public void testNormalFindAll() throws Exception {
+  void testNormalFindAll() throws Exception {
     File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.csv");
     file1.createNewFile();
     File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
@@ -29,7 +29,7 @@ public class DevUtils_getDirectoryFilesTest {
   }
 
   @Test
-  public void testNormalFindExtension() throws Exception {
+  void testNormalFindExtension() throws Exception {
     File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
     File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
@@ -46,7 +46,7 @@ public class DevUtils_getDirectoryFilesTest {
   }
 
   @Test
-  public void testNormalNotFond() throws Exception {
+  void testNormalNotFond() throws Exception {
     File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
     File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
@@ -59,13 +59,13 @@ public class DevUtils_getDirectoryFilesTest {
   }
 
   @Test
-  public void testPathParameterIsNull() throws Exception {
+  void testPathParameterIsNull() throws Exception {
     List<String> result = DevUtils.getDirectoryFiles(null, "");
     assertEquals(result.size(), 0);
   }
 
   @Test
-  public void testExtensionParameterIsNull() throws Exception {
+  void testExtensionParameterIsNull() throws Exception {
     File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.csv");
     file1.createNewFile();
     File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
