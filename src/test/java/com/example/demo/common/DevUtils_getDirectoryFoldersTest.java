@@ -4,35 +4,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class DevUtils_getDirectoryFoldersTest {
-  @Rule
-  public TemporaryFolder tempFolder = new TemporaryFolder();
+  @TempDir 
+  Path tempFolder;
   
   @Test
   public void testNormalFind() throws Exception {
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.txt");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test2.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
     file2.createNewFile();
-    File subDir = new File(tempFolder.getRoot().getAbsolutePath()+ "\\sub1\\sub2" );
+    File subDir = new File(tempFolder.toFile().getAbsolutePath()+ "\\sub1\\sub2" );
     Files.createDirectories(subDir.toPath());
-    List<String> result = DevUtils.getDirectoryFolders(tempFolder.getRoot().getAbsolutePath());
+    List<String> result = DevUtils.getDirectoryFolders(tempFolder.toFile().getAbsolutePath());
     assertEquals(result.size(), 1);
   }
 
   @Test
   public void testNormalNotFind() throws Exception {
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.csv");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.csv");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test2.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
     file2.createNewFile();
-    List<String> result = DevUtils.getDirectoryFolders(tempFolder.getRoot().getAbsolutePath());
+    List<String> result = DevUtils.getDirectoryFolders(tempFolder.toFile().getAbsolutePath());
     assertEquals(result.size(), 0);
   }
 
@@ -44,7 +44,7 @@ public class DevUtils_getDirectoryFoldersTest {
 
   @Test
   public void testPathParameterIsFile() throws Exception {
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.csv");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.csv");
     file1.createNewFile();
     List<String> result = DevUtils.getDirectoryFolders(file1.getPath());
     assertEquals(result.size(), 0);

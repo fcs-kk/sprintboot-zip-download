@@ -8,54 +8,53 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class DevUtils_getDirectoryFilesTest {
-  @Rule
-  public TemporaryFolder tempFolder = new TemporaryFolder();
+  @TempDir 
+  Path tempFolder;
   
   @Test
   public void testNormalFindAll() throws Exception {
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.csv");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.csv");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test2.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
     file2.createNewFile();
     ArrayList<File> files = new ArrayList<File>();
     files.add(file1);
     files.add(file2);
-    List<String> result = DevUtils.getDirectoryFiles(tempFolder.getRoot().getAbsolutePath(), "");
+    List<String> result = DevUtils.getDirectoryFiles(tempFolder.toFile().getAbsolutePath(), "");
     assertEquals(result.size(), 2);
   }
 
   @Test
   public void testNormalFindExtension() throws Exception {
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.txt");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test2.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
     file2.createNewFile();
-    File subDir = new File(tempFolder.getRoot().getAbsolutePath()+ "\\sub1\\sub2" );
+    File subDir = new File(tempFolder.toFile().getAbsolutePath()+ "\\sub1\\sub2" );
     Path path = Files.createDirectories(subDir.toPath());
 
     ArrayList<File> files = new ArrayList<File>();
     files.add(file1);
     files.add(file2);
     files.add(path.toFile());
-    List<String> result = DevUtils.getDirectoryFiles(tempFolder.getRoot().getAbsolutePath(), "txt");
+    List<String> result = DevUtils.getDirectoryFiles(tempFolder.toFile().getAbsolutePath(), "txt");
     assertEquals(result.size(), 2);
   }
 
   @Test
   public void testNormalNotFond() throws Exception {
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.txt");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test2.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
     file2.createNewFile();
     ArrayList<File> files = new ArrayList<File>();
     files.add(file1);
     files.add(file2);
-    List<String> result = DevUtils.getDirectoryFiles(tempFolder.getRoot().getAbsolutePath(), "csv");
+    List<String> result = DevUtils.getDirectoryFiles(tempFolder.toFile().getAbsolutePath(), "csv");
     assertEquals(result.size(), 0);
   }
 
@@ -67,14 +66,14 @@ public class DevUtils_getDirectoryFilesTest {
 
   @Test
   public void testExtensionParameterIsNull() throws Exception {
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.csv");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.csv");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test2.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
     file2.createNewFile();
     ArrayList<File> files = new ArrayList<File>();
     files.add(file1);
     files.add(file2);
-    List<String> result = DevUtils.getDirectoryFiles(tempFolder.getRoot().getAbsolutePath(), null);
+    List<String> result = DevUtils.getDirectoryFiles(tempFolder.toFile().getAbsolutePath(), null);
     assertEquals(result.size(), 0);
   }
 }

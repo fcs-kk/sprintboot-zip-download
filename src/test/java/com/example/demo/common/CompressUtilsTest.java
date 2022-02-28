@@ -1,7 +1,7 @@
 package com.example.demo.common;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
@@ -9,20 +9,19 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class CompressUtilsTest  {
-  @Rule
-  public TemporaryFolder tempFolder = new TemporaryFolder();
+  @TempDir 
+  Path tempFolder;
 
   @Test
   public void testCompressionRootDirectory() throws Exception {
     boolean result = false;
     createTestFileInRootDirectory("test.txt");
     OutputStream stream = mock(OutputStream.class);
-    result = CompressUtils.compressDirectory(stream, tempFolder.getRoot());
+    result = CompressUtils.compressDirectory(stream, tempFolder.toFile());
     assertTrue(result);
   }
 
@@ -31,14 +30,14 @@ public class CompressUtilsTest  {
     boolean result = false;
     createTestFileInSubDirectory("test.txt");
     OutputStream stream = mock(OutputStream.class);
-    result = CompressUtils.compressDirectory(stream, tempFolder.getRoot());
+    result = CompressUtils.compressDirectory(stream, tempFolder.toFile());
     assertTrue(result);
   }
   
   @Test
   public void testStreamParameterIsNull() throws Exception {
     boolean result = false;
-    result = CompressUtils.compressDirectory(null, tempFolder.getRoot());
+    result = CompressUtils.compressDirectory(null, tempFolder.toFile());
     assertFalse(result);
   }
 
@@ -53,7 +52,7 @@ public class CompressUtilsTest  {
   @Test
   public void testDirectoryIsNothing() throws Exception {
     boolean result = false;
-    File nonDir = new File(tempFolder.getRoot().getAbsolutePath() + "\\non");
+    File nonDir = new File(tempFolder.toFile().getAbsolutePath() + "\\non");
     OutputStream stream = mock(OutputStream.class);
     result = CompressUtils.compressDirectory(stream, nonDir);
     assertFalse(result);
@@ -63,10 +62,10 @@ public class CompressUtilsTest  {
    * テンポラリフォルダにファイル作成
    */
   private void createTestFileInRootDirectory(String fileName) throws Exception {
-    File dir = tempFolder.getRoot();
+    File dir = tempFolder.toFile();
     assertTrue(dir.exists());
-    tempFolder.newFile(fileName);
     File file = new File(dir.getAbsolutePath() + "\\" + fileName);
+    file.createNewFile();
     assertTrue(file.exists());
   }
 
@@ -74,7 +73,7 @@ public class CompressUtilsTest  {
    * テンポラリフォルダにファイル作成
    */
   private void createTestFileInSubDirectory(String fileName) throws Exception {
-    File dir = tempFolder.getRoot();
+    File dir = tempFolder.toFile();
     assertTrue(dir.exists());
     File subDir = new File(dir.getParentFile()+ "\\sub1\\sub2" );
     Path path = Files.createDirectories(subDir.toPath());

@@ -1,28 +1,28 @@
 package com.example.demo.common;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 public class HttpUtils_doMultiplueFileDownloadTest {
-  @Rule
-  public TemporaryFolder tempFolder = new TemporaryFolder();
+  @TempDir 
+  Path tempFolder;
   MockHttpServletResponse response = new MockHttpServletResponse();
   
   @Test
   public void testNormal() throws Exception {
     boolean result = false;
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.txt");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test2.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
     file2.createNewFile();
     ArrayList<File> files = new ArrayList<File>();
     files.add(file1);
@@ -37,9 +37,9 @@ public class HttpUtils_doMultiplueFileDownloadTest {
   @Test
   public void testResponseParameterIsNull() throws Exception {
     boolean result = false;
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.txt");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test2.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\test2.txt");
     file2.createNewFile();
     ArrayList<File> files = new ArrayList<File>();
     files.add(file1);
@@ -66,9 +66,9 @@ public class HttpUtils_doMultiplueFileDownloadTest {
   @Test
   public void testFileNotExists() throws Exception {
     boolean result = false;
-    File file1 = new File(tempFolder.getRoot().getAbsolutePath() + "\\test1.txt");
+    File file1 = new File(tempFolder.toFile().getAbsolutePath() + "\\test1.txt");
     file1.createNewFile();
-    File file2 = new File(tempFolder.getRoot().getAbsolutePath() + "\\none.txt");
+    File file2 = new File(tempFolder.toFile().getAbsolutePath() + "\\none.txt");
     ArrayList<File> files = new ArrayList<File>();
     files.add(file1);
     files.add(file2);
